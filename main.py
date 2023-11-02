@@ -1,5 +1,3 @@
-# fazer por igualdade e depois ir por intervalo
-# nao vale build in
 from datetime import datetime
 import generate_random_games
 
@@ -58,6 +56,22 @@ def search_games_by_price(bst : Node, price : int):
     search(bst)
     return games_found
 
+def search_games_by_price_range(bst : Node, min_price : int, max_price : int):
+    games_found = []
+
+    def search(node : Node):
+        if node is None:
+            return
+
+        if node.Game.Price > min_price and node.Game.Price < max_price:
+            games_found.append(node.Game)
+
+        search(node.L)
+        search(node.R)
+
+    search(bst)
+    return games_found
+
 games = generate_games()
 bst = generate_price_bst(games)
 print_bst(bst)
@@ -65,5 +79,8 @@ print_bst(bst)
 found_games_100 = search_games_by_price(bst, 100)
 found_games_200 = search_games_by_price(bst, 200)
 found_games_300 = search_games_by_price(bst, 300)
+
+found_games_range_100_150 = search_games_by_price_range(bst, 100, 150)
+found_games_range_0_50 = search_games_by_price_range(bst, 0, 50)
 
 input()
