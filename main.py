@@ -42,8 +42,28 @@ def generate_price_bst(games : list):
         bst = insert_price_bst(bst, game)
     return bst
 
+def search_games_by_price(bst : Node, price : int):
+    games_found = []
+
+    def search(node : Node):
+        if node is None:
+            return
+
+        if node.Game.Price == price:
+            games_found.append(node.Game)
+
+        search(node.L)
+        search(node.R)
+
+    search(bst)
+    return games_found
+
 games = generate_games()
 bst = generate_price_bst(games)
 print_bst(bst)
+
+found_games_100 = search_games_by_price(bst, 100)
+found_games_200 = search_games_by_price(bst, 200)
+found_games_300 = search_games_by_price(bst, 300)
 
 input()
