@@ -1,27 +1,10 @@
 # fazer por igualdade e depois ir por intervalo
 # nao vale build in
-from random import randint
-
-class Game:
-    Id : int
-    Title : str
-    Developer : str
-    Price : float
-    Category : list
-
-    def __init__(self, id, title, developer, price, category):
-        self.Id = id
-        self.Title = title
-        self.Developer = developer
-        self.Price = price
-        self.Category
-
-    def random_game():
-        titles01 = ["A Aventura de ", "A Lenda de ", "A Caça de ", "A ", "O "]
-        titles02 = ["Turabão", ""]
+from datetime import datetime
+from generate_random_games import generate_random_games
 
 class Node:
-    Game : Game
+    Game = None
     L = None # ESQUERDO
     R = None # DIREITO
 
@@ -30,8 +13,8 @@ class Node:
         self.L = None
         self.R = None
 
-jogo = Game(1, "titulo", "dev", 0, [])
-
-game = Node(jogo)
-game.L = Node(jogo)
-game.R = Node(jogo)
+initial = datetime.now()
+games = generate_random_games(100000)
+final = datetime.now()
+print(final - initial)
+# input()
