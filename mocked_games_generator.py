@@ -8,4 +8,4 @@ def generate_games(quantity : int):
     for game in games:
         file.write(f"{ game.Id }#{ game.Title }#{ game.Developer }#{ game.Price }#{ game.Genres }\n")
 
-generate_games(90000)
+generate_games(500000)

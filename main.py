@@ -1,5 +1,8 @@
 from datetime import datetime
 import generate_random_games
+import sys
+
+sys.setrecursionlimit(500001)
 
 def generate_games(quantity : int):
     """Geração de jogos aleatórios"""
@@ -14,6 +17,7 @@ def get_mocked_games():
     initial = datetime.now()
     file = open("mocked_games.txt", "r")
     lines = file.readlines()
+    lines_len = len(lines)
 
     games = []
     for line in lines:
@@ -27,7 +31,7 @@ def get_mocked_games():
         ))
 
     final = datetime.now()
-    print(f"Tempo de leitura de 90000 jogos: { final - initial }")
+    print(f"Tempo de leitura de { lines_len } jogos: { final - initial }")
 
     return games
 
@@ -79,14 +83,16 @@ def search_games_by_price(bst : Node, price : int):
     def search(node : Node):
         if node is None:
             return
-
-        if node.Game.Price == price:
+        elif node.Game.Price == price:
             games_found.append(node.Game)
-
-        search(node.L)
-        search(node.R)
+            search(node.R)
+        elif node.Game.Price < price:
+            search(node.L)
+        else:
+            search(node.R)
 
     search(bst)
+    # search(bst.L if bst.Game.Price < price else bst.R)
     final = datetime.now()
     print(f"Tempo de busca de jogos por preço fixo R$ { price }: { final - initial }")
     return games_found
@@ -111,7 +117,7 @@ def search_games_by_price_range(bst : Node, min_price : int, max_price : int):
     print(f"Tempo de busca de jogos por intervalo de preço (R${ min_price } - R${ max_price }): { final - initial }")
     return games_found
 
-# games = generate_games(90000)
+# games = generate_games(200000)
 games = get_mocked_games()
 
 bst = generate_price_bst(games)
