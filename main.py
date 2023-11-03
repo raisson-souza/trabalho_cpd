@@ -9,6 +9,28 @@ def generate_games(quantity : int):
     print(f"Tempo de geração de { quantity } jogos: { final - initial }")
     return games
 
+def get_mocked_games():
+    """Captura de jogos pré-gerados e estáticos"""
+    initial = datetime.now()
+    file = open("mocked_games.txt", "r")
+    lines = file.readlines()
+
+    games = []
+    for line in lines:
+        game_info = line.split("#")
+        games.append(generate_random_games.Game(
+            int(game_info[0]),
+            game_info[1],
+            game_info[2],
+            int(game_info[3]),
+            game_info[4]
+        ))
+
+    final = datetime.now()
+    print(f"Tempo de leitura de 90000 jogos: { final - initial }")
+
+    return games
+
 class Node:
     Game = generate_random_games.Game
     L = None # ESQUERDO
@@ -89,7 +111,8 @@ def search_games_by_price_range(bst : Node, min_price : int, max_price : int):
     print(f"Tempo de busca de jogos por intervalo de preço (R${ min_price } - R${ max_price }): { final - initial }")
     return games_found
 
-games = generate_games(150000)
+# games = generate_games(90000)
+games = get_mocked_games()
 
 bst = generate_price_bst(games)
 # print_bst(bst)
