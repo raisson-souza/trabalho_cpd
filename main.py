@@ -19,15 +19,20 @@ def get_mocked_games():
     lines = file.readlines()
     lines_len = len(lines)
 
+    def treat_genre_line(genre_line : str) -> list:
+        return genre_line.replace("[", "").replace("]", "").replace("'", "").replace(" ", "").split(",")
+
     games = []
     for line in lines:
+        line = line.replace("\n", "")
         game_info = line.split("#")
+        game_genres = treat_genre_line(game_info[4])
         games.append(generate_random_games.Game(
             int(game_info[0]),
             game_info[1],
             game_info[2],
             int(game_info[3]),
-            game_info[4]
+            game_genres
         ))
 
     final = datetime.now()
@@ -117,6 +122,41 @@ def search_games_by_price_range(bst : Node, min_price : int, max_price : int):
     print(f"Tempo de busca de jogos por intervalo de preço (R${ min_price } - R${ max_price }): { final - initial }")
     return games_found
 
+def encrypt_genre(genre_name : str):
+        return genre_name.lower()
+
+def generate_genres_obj(games : list):
+    """Gera um objeto com gêneros em hash"""
+    genres_list = {}
+
+    def insert_genres_obj(game : generate_random_games.Game):
+        """Função de inserção de jogos no objeto com gêneros em hash"""
+        for genre in game.Genres:
+            encrypted_genre = encrypt_genre(genre)
+            if encrypted_genre in genres_list:
+                genres_list[encrypted_genre].append(game)
+            else:
+                genres_list[encrypted_genre] = [game]
+
+    initial = datetime.now()
+    for game in games:
+        insert_genres_obj(game)
+    final = datetime.now()
+    print(f"Tempo de geração do objeto com gêneros: { final - initial }")
+    return genres_list
+
+def search_game_by_genre(genres_json, genre : str):
+    initial = datetime.now()
+    games_found = []
+    encrypted_genre = encrypt_genre(genre)
+
+    if encrypted_genre in genres_json:
+        games_found = genres_json[encrypted_genre]
+
+    final = datetime.now()
+    print(f"Tempo de busca de jogos do gênero { genre }: { final - initial }")
+    return games_found
+
 # games = generate_games(200000)
 games = get_mocked_games()
 
@@ -129,5 +169,12 @@ found_games_300 = search_games_by_price(bst, 300)
 
 found_games_range_100_150 = search_games_by_price_range(bst, 100, 150)
 found_games_range_0_50 = search_games_by_price_range(bst, 0, 50)
+
+genres_list = generate_genres_obj(games)
+
+action_games = search_game_by_genre(genres_list, "Action")
+strategy_games = search_game_by_genre(genres_list, "Strategy")
+rpg_games = search_game_by_genre(genres_list, "rpg")
+terror_games = search_game_by_genre(genres_list, "terror")
 
 input()
