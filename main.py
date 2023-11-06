@@ -12,10 +12,10 @@ def generate_games(quantity : int):
     print(f"Tempo de geração de { quantity } jogos: { final - initial }")
     return games
 
-def get_mocked_games():
+def get_mocked_games(quantity : int):
     """Captura de jogos pré-gerados e estáticos"""
     initial = datetime.now()
-    file = open("mocked_games.txt", "r")
+    file = open(f"mocked_games_{ quantity }.txt", "r")
     lines = file.readlines()
     lines_len = len(lines)
 
@@ -158,7 +158,7 @@ def search_game_by_genre(genres_json, genre : str):
     return games_found
 
 # games = generate_games(200000)
-games = get_mocked_games()
+games = get_mocked_games(500000)
 
 bst = generate_price_bst(games)
 # print_bst(bst)
