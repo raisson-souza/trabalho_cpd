@@ -42,8 +42,8 @@ def get_mocked_games(quantity : int):
 
 class Node:
     Game = generate_random_games.Game
-    L = None # ESQUERDO
-    R = None # DIREITO
+    L = None # ESQUERDO (menor)
+    R = None # DIREITO  (maior)
 
     def __init__(self, game : generate_random_games.Game):
         self.Game = game
@@ -65,10 +65,10 @@ def generate_price_bst(games : list):
         """Função de inserção de jogos na BST ordenada por preço"""
         if root == None:
             return Node(game)
-        elif game.Price > root.Game.Price:
-            root.L = insert_price_bst(root.L, game)
-        else:
+        elif game.Price >= root.Game.Price:
             root.R = insert_price_bst(root.R, game)
+        else:
+            root.L = insert_price_bst(root.L, game)
         return root
 
     initial = datetime.now()
@@ -88,13 +88,13 @@ def search_games_by_price(bst : Node, price : int):
     def search(node : Node):
         if node is None:
             return
-        elif node.Game.Price == price:
+        elif price == node.Game.Price:
             games_found.append(node.Game)
             search(node.R)
-        elif node.Game.Price < price:
-            search(node.L)
-        else:
+        elif price > node.Game.Price:
             search(node.R)
+        else:
+            search(node.L)
 
     search(bst)
     # search(bst.L if bst.Game.Price < price else bst.R)
@@ -157,8 +157,8 @@ def search_game_by_genre(genres_json, genre : str):
     print(f"Tempo de busca de jogos do gênero { genre }: { final - initial }")
     return games_found
 
-# games = generate_games(200000)
-games = get_mocked_games(500000)
+games = generate_games(1500)
+# games = get_mocked_games(500000)
 
 bst = generate_price_bst(games)
 # print_bst(bst)
