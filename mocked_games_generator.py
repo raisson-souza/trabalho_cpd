@@ -14,8 +14,8 @@ def generate_games(quantity : int):
 
     file.close()
 
-generate_games(1000000)
-generate_games(500000)
-generate_games(250000)
-generate_games(100000)
-generate_games(50000)
+generate_games(10000)
+generate_games(5000)
+generate_games(2500)
+generate_games(1000)
+generate_games(500)
