@@ -2,8 +2,6 @@ from datetime import datetime
 import generate_random_games
 import sys
 
-sys.setrecursionlimit(500001)
-
 def generate_games(quantity : int):
     """Geração de jogos aleatórios"""
     initial = datetime.now()
