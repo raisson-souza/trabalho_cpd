@@ -1,6 +1,5 @@
 from datetime import datetime
 import generate_random_games
-import sys
 
 def generate_games(quantity : int):
     """Geração de jogos aleatórios"""
@@ -57,7 +56,7 @@ def print_bst(root : Node):
     print_bst(root.R)
 
 def generate_price_bst(games : list):
-    """Gera a BST ordenada por preço"""
+    """Gera a BST balanceada ordenada por preço"""
 
     def insert_price_bst(root : Node, game : generate_random_games.Game):
         """Função de inserção de jogos na BST ordenada por preço"""
@@ -67,7 +66,73 @@ def generate_price_bst(games : list):
             root.R = insert_price_bst(root.R, game)
         else:
             root.L = insert_price_bst(root.L, game)
-        return root
+        return balance(root)
+
+    def balance(node : Node):
+        if node is None:
+            return node
+
+        equilibirium = equilibrium_measure(node)
+
+        if equilibirium > 1 and node.Game.Price < node.L.Game.Price:
+            return right_rotation(node)
+
+        if equilibirium < -1 and node.Game.Price > node.R.Game.Price:
+            return left_rotation(node)
+
+        if equilibirium > 1 and node.Game.Price > node.L.Game.Price:
+            node.L = left_rotation(node.L)
+            return right_rotation(node)
+
+        if equilibirium < -1 and node.Game.Price < node.R.Game.Price:
+            node.R = right_rotation(node.R)
+            return left_rotation(node)
+
+        return node
+
+    def equilibrium_measure(node : Node):
+        """Mensura o equilibrio dos ramos de um nó"""
+        if node is None:
+            return 0
+
+        l_height = get_height(node.L)
+        r_height = get_height(node.R)
+
+        return l_height - r_height
+
+    def get_height(node : Node):
+        """Captura a altura de um ramo da BST"""
+        if node is None:
+            return 0
+
+        l_height = get_height(node.L)
+        r_height = get_height(node.R)
+
+        return max(l_height, r_height) + 1
+
+    def left_rotation(x : Node):
+        if x is None or x.R is None:
+            return x
+
+        y = x.R
+        T2 = y.L
+
+        y.L = x
+        x.R = T2
+
+        return y
+
+    def right_rotation(y : Node):
+        if y is None or y.L is None:
+            return y
+        
+        x = y.L
+        T2 = x.R
+
+        x.R = y
+        y.L = T2
+
+        return x
 
     initial = datetime.now()
     bst = None
@@ -95,7 +160,6 @@ def search_games_by_price(bst : Node, price : int):
             search(node.L)
 
     search(bst)
-    # search(bst.L if bst.Game.Price < price else bst.R)
     final = datetime.now()
     print(f"Tempo de busca de jogos por preço fixo R$ { price }: { final - initial }")
     return games_found
@@ -155,11 +219,9 @@ def search_game_by_genre(genres_json, genre : str):
     print(f"Tempo de busca de jogos do gênero { genre }: { final - initial }")
     return games_found
 
-games = generate_games(1500)
-# games = get_mocked_games(500000)
+games = generate_games(1000)
 
 bst = generate_price_bst(games)
-# print_bst(bst)
 
 found_games_100 = search_games_by_price(bst, 100)
 found_games_200 = search_games_by_price(bst, 200)
